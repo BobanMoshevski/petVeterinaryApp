@@ -5,14 +5,15 @@ namespace api.Mappers
 {
     public static class OwnerMappers
     {
-        public static OwnerDto ToOwnerDto(this Owner owner)
+        public static OwnerDto ToOwnerDto(this Owner ownerModel)
         {
             return new OwnerDto
             {
-                Id = owner.Id,
-                Name = owner.Name,
-                Surname = owner.Surname,
-                Age = owner.Age,
+                Id = ownerModel.Id,
+                Name = ownerModel.Name,
+                Surname = ownerModel.Surname,
+                Age = ownerModel.Age,
+                Pets = ownerModel.Pets.Select(p => p.ToPetsDto()).ToList()
             };
         }
 
