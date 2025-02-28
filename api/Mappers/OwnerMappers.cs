@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Owner;
+using api.Dtos.Pet;
 using api.Models;
 
 namespace api.Mappers
@@ -13,7 +14,9 @@ namespace api.Mappers
                 Name = ownerModel.Name,
                 Surname = ownerModel.Surname,
                 Age = ownerModel.Age,
-                Pets = ownerModel.Pets.Select(p => p.ToPetsDto()).ToList()
+                Pets = ownerModel.Pets?
+                    .Select(p => p.ToPetsDto()) 
+                    .ToList() ?? new List<PetsDto>()
             };
         }
 

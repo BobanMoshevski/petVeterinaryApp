@@ -6,7 +6,7 @@ namespace api.Interfaces
     {
         Task<List<Pet>> GetAllPets();
         Task<Pet?> GetPetById(int id);
-        Task<Pet?> CreatePet(Pet petModel);
+        Task<Pet?> CreatePet(Pet petModel, List<int> VaccineIds);
         Task<Pet?> UpdatePet(int id, Pet petModel);
         Task<Pet?> DeletePet(int id);
     }

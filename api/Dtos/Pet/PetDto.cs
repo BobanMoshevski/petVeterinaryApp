@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Owner;
+using api.Dtos.Vaccine;
 
 namespace api.Dtos.Pet
 {
@@ -8,5 +9,6 @@ namespace api.Dtos.Pet
         public string Name { get; set; }
         public int Age { get; set; }
         public PetWithOwnerDto Owner { get; set; }
+        public List<VaccineDto> Vaccines { get; set; }
     }
 }
