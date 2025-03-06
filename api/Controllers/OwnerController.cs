@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Owner;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -17,12 +18,12 @@ namespace api.Controllers
 
         [HttpGet]
         [Route("owners")]
-        public async Task<IActionResult> GetAllOwners()
+        public async Task<IActionResult> GetAllOwners([FromQuery] OwnerQueryObject query)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var owners = await _ownerRepo.GetAllOwners();
+            var owners = await _ownerRepo.GetAllOwners(query);
             var ownerDto = owners.Select(o => o.ToOwnerDto());
             return Ok(ownerDto);
         }

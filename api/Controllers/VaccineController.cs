@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Vaccine;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -17,12 +18,12 @@ namespace api.Controllers
 
         [HttpGet]
         [Route("vaccines")]
-        public async Task<IActionResult> GetAllVaccines()
+        public async Task<IActionResult> GetAllVaccines([FromQuery] VaccineQueryObject query)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var vaccines = await _vaccineRepo.GetAllVaccines();
+            var vaccines = await _vaccineRepo.GetAllVaccines(query);
             var vaccineDto = vaccines.Select(v => v.ToVaccineDto());
             return Ok(vaccineDto);
         }

@@ -1,5 +1,6 @@
 ﻿using api.Data;
 using api.Dtos.Owner;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -36,12 +37,39 @@ namespace api.Repository
             return ownerModel;
         }
 
-        public async Task<List<Owner>> GetAllOwners()
+        public async Task<List<Owner>> GetAllOwners(OwnerQueryObject query)
         {
-            return await _context.Owners.Include(p => p.Pets)
+            var owners = _context.Owners.Include(p => p.Pets)
                 .ThenInclude(pv => pv.PetVaccines)
                 .ThenInclude(v => v.Vaccine)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                owners = owners.Where(o => o.Name.Contains(query.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Surname))
+            {
+                owners = owners.Where(o => o.Surname.Contains(query.Surname));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    owners = query.IsDescending ? owners.OrderByDescending(o => o.Name) : owners.OrderBy(o => o.Name);
+                }
+
+                if (query.SortBy.Equals("Surname", StringComparison.OrdinalIgnoreCase))
+                {
+                    owners = query.IsDescending ? owners.OrderByDescending(o => o.Surname) : owners.OrderBy(o => o.Surname);
+                }
+            }
+
+            var skipNumber = (query.PageNumber -1) * query.PageSize;
+
+            return await owners.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
         public async Task<Owner?> GetOwnerById(int id)

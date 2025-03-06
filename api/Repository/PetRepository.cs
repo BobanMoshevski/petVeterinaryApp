@@ -1,4 +1,5 @@
 ﻿using api.Data;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -54,13 +55,30 @@ namespace api.Repository
             return petModel;
         }
 
-        public async Task<List<Pet>> GetAllPets()
+        public async Task<List<Pet>> GetAllPets(PetQueryObject query)
         {
-            return await _context.Pets
+            var pets = _context.Pets
                 .Include(o => o.Owner)
                 .Include(pv => pv.PetVaccines)
                 .ThenInclude(v => v.Vaccine)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                pets = pets.Where(p => p.Name.Contains(query.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    pets = query.IsDescending ? pets.OrderByDescending(p => p.Name) : pets.OrderBy(p => p.Name);
+                }
+            }
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await pets.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
         public async Task<Pet?> GetPetById(int id)
