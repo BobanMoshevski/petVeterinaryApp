@@ -19,15 +19,21 @@ namespace api.Controllers
         [Route("vaccines")]
         public async Task<IActionResult> GetAllVaccines()
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var vaccines = await _vaccineRepo.GetAllVaccines();
             var vaccineDto = vaccines.Select(v => v.ToVaccineDto());
             return Ok(vaccineDto);
         }
 
         [HttpGet]
-        [Route("vaccine/{id}")]
+        [Route("vaccine/{id:int}")]
         public async Task<IActionResult> GetVaccineById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var vaccine = await _vaccineRepo.GetVaccineById(id);
 
             if (vaccine == null)
@@ -42,15 +48,21 @@ namespace api.Controllers
         [Route("vaccine")]
         public async Task<IActionResult> CreateVaccine([FromBody] CreateVaccineRequestDto vaccineDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var vaccineModel = vaccineDto.ToVaccineFromCreateDto();
             await _vaccineRepo.CreateVaccine(vaccineModel);
             return CreatedAtAction(nameof(GetVaccineById), new { id = vaccineModel.Id }, vaccineModel.ToVaccineDto());
         }
 
         [HttpPut]
-        [Route("vaccine/{id}")]
+        [Route("vaccine/{id:int}")]
         public async Task<IActionResult> UpdateVaccine([FromRoute] int id, [FromBody] UpdateVaccineRequestDto updateDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var vaccineModel = await _vaccineRepo.UpdateVaccine(id, updateDto);
 
             if (vaccineModel == null)
@@ -62,9 +74,12 @@ namespace api.Controllers
         }
 
         [HttpDelete]
-        [Route(("vaccine/{id}"))]
+        [Route(("vaccine/{id:int}"))]
         public async Task<IActionResult> DeleteVaccine([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var vaccineModel = await _vaccineRepo.DeleteVaccine(id);
 
             if (vaccineModel == null)

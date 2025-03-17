@@ -21,15 +21,21 @@ namespace api.Controllers
         [Route("pets")]
         public async Task<IActionResult> GetAllPets()
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var pets = await _petRepo.GetAllPets();
             var petDto = pets.Select(p => p.ToPetDto());
             return Ok(petDto);
         }
 
         [HttpGet]
-        [Route("pet/{id}")]
+        [Route("pet/{id:int}")]
         public async Task<IActionResult> GetPetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var pet = await _petRepo.GetPetById(id);
 
             if (pet == null)
@@ -41,9 +47,12 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Route("pet/{ownerId}")]
+        [Route("pet/{ownerId:int}")]
         public async Task<IActionResult> CreatePet([FromRoute] int ownerId, CreatePetRequestDto petDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (!await _ownerRepo.OwnerExists(ownerId))
             {
                 return BadRequest("Owner does not exist");
@@ -61,9 +70,12 @@ namespace api.Controllers
         }
 
         [HttpPut]
-        [Route("pet/{id}")]
+        [Route("pet/{id:int}")]
         public async Task<IActionResult> UpdatePet([FromRoute] int id, [FromBody] UpdatePetRequestDto updatePetDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (!await _ownerRepo.OwnerExists(updatePetDto.OwnerId))
             {
                 return BadRequest("Owner does not exist");
@@ -80,9 +92,12 @@ namespace api.Controllers
         }
 
         [HttpDelete]
-        [Route("pet/{id}")]
+        [Route("pet/{id:int}")]
         public async Task<IActionResult> DeletePet([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var petModel = await _petRepo.DeletePet(id);
 
             if (petModel == null)
