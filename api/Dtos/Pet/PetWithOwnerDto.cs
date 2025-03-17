@@ -1,14 +1,11 @@
-﻿using api.Dtos.Pet;
-
-namespace api.Dtos.Owner
+﻿namespace api.Dtos.Pet
 {
-    public class OwnerDto
+    public class PetWithOwnerDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public int Age { get; set; }
         public string FullName => $"{Name} {Surname}";
-        public List<PetsDto> Pets { get; set; }
     }
 }

@@ -38,13 +38,18 @@ namespace api.Repository
 
         public async Task<List<Owner>> GetAllOwners()
         {
-            return await _context.Owners.ToListAsync();
+            return await _context.Owners.Include(p => p.Pets).ToListAsync();
         }
 
         public async Task<Owner?> GetOwnerById(int id)
         {
-            return await _context.Owners.FindAsync(id);
+            return await _context.Owners.Include(p => p.Pets).FirstOrDefaultAsync(i => i.Id == id);
 
+        }
+
+        public Task<bool> OwnerExists(int id)
+        {
+            return _context.Owners.AnyAsync(o => o.Id == id);
         }
 
         public async Task<Owner?> UpdateOwner(int id, UpdateOwnerRequestDto ownerDto)

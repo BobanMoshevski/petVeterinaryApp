@@ -10,5 +10,6 @@ namespace api.Interfaces
         Task<Owner> CreateOwner(Owner ownerModel);
         Task<Owner?> UpdateOwner(int id, UpdateOwnerRequestDto ownerDto);
         Task<Owner?> DeleteOwner(int id);
+        Task<bool> OwnerExists(int id);
     }
 }
