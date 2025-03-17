@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Pet;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +20,12 @@ namespace api.Controllers
 
         [HttpGet]
         [Route("pets")]
-        public async Task<IActionResult> GetAllPets()
+        public async Task<IActionResult> GetAllPets([FromQuery] PetQueryObject query)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var pets = await _petRepo.GetAllPets();
+            var pets = await _petRepo.GetAllPets(query);
             var petDto = pets.Select(p => p.ToPetDto());
             return Ok(petDto);
         }

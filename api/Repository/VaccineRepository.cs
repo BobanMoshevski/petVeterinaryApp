@@ -1,5 +1,6 @@
 ﻿using api.Data;
 using api.Dtos.Vaccine;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,26 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<List<Vaccine>> GetAllVaccines()
+        public async Task<List<Vaccine>> GetAllVaccines(VaccineQueryObject query)
         {
-            return await _context.Vaccines.ToListAsync();
+            var vaccines = _context.Vaccines.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                vaccines = vaccines.Where(v => v.Name.Contains(query.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    vaccines = query.IsDescending ? vaccines.OrderByDescending(v => v.Name) : vaccines.OrderBy(v => v.Name);
+                }
+            }
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await vaccines.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
         public async Task<Vaccine?> GetVaccineById(int id)
