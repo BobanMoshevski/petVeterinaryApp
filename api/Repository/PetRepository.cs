@@ -13,12 +13,31 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<Pet?> CreatePet(Pet petModel)
+        public async Task<Pet?> CreatePet(Pet petModel, List<int> vaccineIds)
         {
-            await _context.AddAsync(petModel);
+            var validVaccineIds = await _context.Vaccines
+                .Where(v => vaccineIds.Contains(v.Id))
+                .Select(v => v.Id)
+                .ToListAsync();
+
+            if (validVaccineIds.Count != vaccineIds.Count)
+            {
+                return null;
+            }
+
+            petModel.PetVaccines = validVaccineIds.Select(vaccineId => new PetVaccine
+            {
+                VaccineId = vaccineId
+            }).ToList();
+
+            await _context.Pets.AddAsync(petModel);
             await _context.SaveChangesAsync();
-            var petWithOwnerModel = await GetPetById(petModel.Id);
-            return petWithOwnerModel;
+
+            return await _context.Pets
+                .Include(o => o.Owner)
+                .Include(pv => pv.PetVaccines)
+                .ThenInclude(v => v.Vaccine)
+                .FirstOrDefaultAsync(p => p.Id == petModel.Id);
         }
 
         public async Task<Pet?> DeletePet(int id)
@@ -38,20 +57,26 @@ namespace api.Repository
         public async Task<List<Pet>> GetAllPets()
         {
             return await _context.Pets
-                .Include(p => p.Owner)
+                .Include(o => o.Owner)
+                .Include(pv => pv.PetVaccines)
+                .ThenInclude(v => v.Vaccine)
                 .ToListAsync();
         }
 
         public async Task<Pet?> GetPetById(int id)
         {
             return await _context.Pets
-                .Include(p => p.Owner)
+                .Include(o => o.Owner)
+                .Include(pv => pv.PetVaccines)
+                .ThenInclude(v => v.Vaccine)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Pet?> UpdatePet(int id, Pet petModel)
         {
-            var existingPet = await _context.Pets.FindAsync(id);
+            var existingPet = await _context.Pets
+                .Include(pv => pv.PetVaccines)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (existingPet == null)
             {
@@ -61,6 +86,20 @@ namespace api.Repository
             existingPet.Name = petModel.Name;
             existingPet.Age = petModel.Age;
             existingPet.OwnerId = petModel.OwnerId;
+
+            existingPet.PetVaccines.Clear();
+
+            if (petModel.PetVaccines != null && petModel.PetVaccines.Any())
+            {
+                foreach (var petVaccine in petModel.PetVaccines)
+                {
+                    existingPet.PetVaccines.Add(new PetVaccine
+                    {
+                        VaccineId = petVaccine.VaccineId,
+                        PetId = existingPet.Id
+                    });
+                }
+            }
 
             await _context.SaveChangesAsync();
 

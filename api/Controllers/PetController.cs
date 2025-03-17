@@ -22,9 +22,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetAllPets()
         {
             var pets = await _petRepo.GetAllPets();
-
             var petDto = pets.Select(p => p.ToPetDto());
-
             return Ok(petDto);
         }
 
@@ -52,7 +50,13 @@ namespace api.Controllers
             }
 
             var petModel = petDto.ToPetFromCreate(ownerId);
-            await _petRepo.CreatePet(petModel);
+            var createdPet = await _petRepo.CreatePet(petModel, petDto.VaccineIds);
+
+            if (createdPet == null)
+            {
+                return BadRequest("One or more vaccine IDs are invalid.");
+            }
+
             return CreatedAtAction(nameof(GetPetById), new { id = petModel.Id }, petModel.ToPetsDto());
         }
 

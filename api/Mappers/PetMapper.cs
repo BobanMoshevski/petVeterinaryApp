@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Pet;
+using api.Dtos.Vaccine;
 using api.Models;
 
 namespace api.Mappers
@@ -11,7 +12,13 @@ namespace api.Mappers
             {
                 Id = petModel.Id,
                 Name = petModel.Name,
-                Age = petModel.Age
+                Age = petModel.Age,
+                Vaccines = petModel.PetVaccines?
+                    .Select(pv => new VaccineDto
+                    {
+                        Id = pv.Vaccine.Id,
+                        Name = pv.Vaccine.Name
+                    }).ToList() ?? new List<VaccineDto>()
             };
         }
 
@@ -28,7 +35,12 @@ namespace api.Mappers
                     Name = petModel.Owner.Name,
                     Surname = petModel.Owner.Surname,
                     Age = petModel.Owner.Age
-                }
+                },
+                Vaccines = petModel.PetVaccines.Select(pv => new VaccineDto
+                {
+                    Id = pv.Vaccine.Id,
+                    Name = pv.Vaccine.Name
+                }).ToList()
             };
         }
 
@@ -38,7 +50,11 @@ namespace api.Mappers
             {
                 Name = petDto.Name,
                 Age = petDto.Age,
-                OwnerId = ownerId
+                OwnerId = ownerId,
+                PetVaccines = petDto.VaccineIds.Select(vaccineId => new PetVaccine
+                {
+                    VaccineId = vaccineId
+                }).ToList()
             };
         }
 
@@ -48,7 +64,8 @@ namespace api.Mappers
             {
                 Name = petDto.Name,
                 Age = petDto.Age,
-                OwnerId = petDto.OwnerId
+                OwnerId = petDto.OwnerId,
+                PetVaccines = petDto.VaccineIds.Select(id => new PetVaccine { VaccineId = id }).ToList()
             };
         }
     }
