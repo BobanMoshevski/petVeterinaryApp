@@ -1,11 +1,9 @@
-import { JSX } from "react";
+import React from "react";
+import { RouterProvider } from "react-router";
+import { router } from "./routes/router";
 
-const App: () => JSX.Element = () => {
-  return (
-    <div>
-      <h1>Pet Veterinary App</h1>
-    </div>
-  );
+const App: React.FC = () => {
+  return <RouterProvider router={router} />;
 };
 
 export default App;
