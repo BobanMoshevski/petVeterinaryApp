@@ -1,9 +1,26 @@
 import React from "react";
 import "./HomePageStyle.css";
+import { Navigation, useNavigation } from "react-router";
 
 const HomePage: React.FC = () => {
+  const navigation: Navigation = useNavigation();
+  const isLoading: boolean = navigation.state === "loading";
+
   return (
     <>
+      {isLoading && (
+        <>
+          <div className="overlay" />
+          <div className="spinner-container">
+            <div
+              className="spinner-border text-light layout-spinner"
+              role="status"
+            >
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </>
+      )}
       <div className="hero-wrapper">
         <div className="hero">
           <p className="hero-text">
