@@ -1,3 +1,18 @@
-a.active {
+.navbar-link {
+  font-size: 1.25rem;
+  text-decoration: none;
+  margin: 5px;
+  color: black;
+}
+
+.navbar-link:hover {
+  color: #222;
+}
+
+a.navbar-link.active {
   color: white;
+}
+
+a.navbar-link.active:hover {
+  color: 222;
 }

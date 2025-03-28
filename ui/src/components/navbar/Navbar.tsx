@@ -6,9 +6,14 @@ const Navbar: React.FC = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-secondary">
       <div className="container-fluid">
-        <NavLink className="navbar-brand" to="/">
-          Home
-        </NavLink>
+        <div className="d-flex">
+          <NavLink className="navbar-link" to="/">
+            Home
+          </NavLink>
+          <NavLink className="navbar-link" to="/owners">
+            Owners
+          </NavLink>
+        </div>
       </div>
     </nav>
   );
