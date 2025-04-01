@@ -1,6 +1,7 @@
 import { LoaderFunctionArgs, Params } from "react-router";
 import axios from "axios";
 import { OwnerType } from "../../../models/OwnerTypes";
+import { PetType } from "../../../models/PetTypes";
 
 const api: string = "https://localhost:7278/api/";
 
@@ -59,5 +60,61 @@ export const ownerGetAPI: ({
     console.error("Error loading owner:", error);
 
     return new Response("Failed to load owner details", { status: 500 });
+  }
+};
+
+export const petsGetAPI: ({
+  request,
+}: LoaderFunctionArgs) => Promise<PetType[] | string> = async ({
+  request,
+}: LoaderFunctionArgs): Promise<PetType[] | string> => {
+  const url: URL = new URL(request.url);
+  const name: string | null = url.searchParams.get("Name");
+  const sortBy: string | null = url.searchParams.get("SortBy");
+  const isDescending: string | null = url.searchParams.get("IsDescending");
+
+  try {
+    const response: Axios.AxiosXHR<PetType[]> = await axios.get<PetType[]>(
+      `${api}pets`,
+      {
+        params: {
+          Name: name,
+          SortBy: sortBy,
+          IsDescending: isDescending,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return "Something went wrong";
+  }
+};
+
+export const petGetAPI: ({
+  params,
+}: LoaderFunctionArgs) => Promise<Response | PetType> = async ({
+  params,
+}: LoaderFunctionArgs) => {
+  const { petId }: Params = params;
+
+  if (!petId) {
+    return new Response("pet ID is required", { status: 400 });
+  }
+
+  try {
+    const response: Axios.AxiosXHR<PetType> = await axios.get(
+      `${api}pet/${petId}`,
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    }
+
+    return new Response("Failed to get pet", { status: 400 });
+  } catch (error) {
+    console.error("Error loading owner:", error);
+
+    return new Response("Failed to load pet details", { status: 500 });
   }
 };

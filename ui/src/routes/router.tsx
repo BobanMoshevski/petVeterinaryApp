@@ -2,16 +2,28 @@ import { createBrowserRouter } from "react-router";
 import RootLayout from "../pages/rootLayout/RootLayout";
 import HomePage from "../pages/homePage/HomePage";
 import OwnersPage from "../pages/ownersPage/OwenrsPage";
-import { ownerGetAPI, ownersGetAPI } from "../services/https/loader/loader";
+import {
+  ownerGetAPI,
+  ownersGetAPI,
+  petGetAPI,
+  petsGetAPI,
+} from "../services/https/loader/loader";
 import {
   createOwnerAction,
-  OwnerDeleteAction,
+  createPetAction,
+  ownerDeleteAction,
+  petDeleteAction,
   updateOwnerAction,
+  updatePetAction,
 } from "../services/https/action/action";
 import CreateOwner from "../components/createOwner/CreateOwner";
 import EditOwner from "../components/editOwner/EditOwner";
 import ErrorPage from "../pages/errorPage/ErrorPage";
 import OwnerDetailPage from "../pages/ownerDetailPage/OwnerDetailPage";
+import PetsPage from "../pages/petsPage/PetsPage";
+import PetDetailPage from "../pages/petDetailPage/PetDetailPage";
+import CreatePetPage from "../pages/createPetPage/CreatePetPage";
+import EditPetPage from "../pages/editPetPage/EditPetPage";
 
 export const router: ReturnType<typeof createBrowserRouter> =
   createBrowserRouter([
@@ -48,15 +60,53 @@ export const router: ReturnType<typeof createBrowserRouter> =
               action: createOwnerAction,
             },
             {
-              path: ":ownerId/delete",
-              action: OwnerDeleteAction,
-            },
-            {
               path: ":ownerId/edit",
               element: <EditOwner />,
               id: "editOwner",
               loader: ownerGetAPI,
               action: updateOwnerAction,
+            },
+            {
+              path: ":ownerId/delete",
+              action: ownerDeleteAction,
+            },
+          ],
+        },
+        {
+          path: "pets",
+          id: "petsPage",
+          element: <PetsPage />,
+          loader: petsGetAPI,
+        },
+        {
+          path: "pet",
+          id: "pet",
+          loader: ownersGetAPI,
+          children: [
+            {
+              index: true,
+              path: ":petId",
+              id: "petDetail",
+              element: <PetDetailPage />,
+              loader: petGetAPI,
+            },
+            {
+              path: "new",
+              element: <CreatePetPage />,
+              id: "newPet",
+              loader: ownersGetAPI,
+              action: createPetAction,
+            },
+            {
+              path: ":petId/edit",
+              element: <EditPetPage />,
+              id: "editPet",
+              loader: petGetAPI,
+              action: updatePetAction,
+            },
+            {
+              path: ":petId/delete",
+              action: petDeleteAction,
             },
           ],
         },
