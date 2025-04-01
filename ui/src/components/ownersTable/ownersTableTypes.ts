@@ -6,5 +6,5 @@ export interface OwnersTableTypes {
 
 export type DeleteOwnerLoadingStateType = [
   deleteOwnerLoading: number | null,
-  etDeleteOwnerLoading: React.Dispatch<React.SetStateAction<number | null>>,
+  setDeleteOwnerLoading: React.Dispatch<React.SetStateAction<number | null>>,
 ];
