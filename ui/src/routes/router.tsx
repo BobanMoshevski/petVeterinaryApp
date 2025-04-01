@@ -24,6 +24,10 @@ import PetsPage from "../pages/petsPage/PetsPage";
 import PetDetailPage from "../pages/petDetailPage/PetDetailPage";
 import CreatePetPage from "../pages/createPetPage/CreatePetPage";
 import EditPetPage from "../pages/editPetPage/EditPetPage";
+import VaccinesPage from "../pages/vaccinesPage/VaccinesPage";
+import VaccineDetailPage from "../pages/vaccineDetailPage/VaccineDetailPage";
+import CreateVaccinePage from "../pages/createVaccinePage/CreateVaccinePage";
+import EditVaccinePage from "../pages/editVaccinePage/EditVaccinePage";
 
 export const router: ReturnType<typeof createBrowserRouter> =
   createBrowserRouter([
@@ -107,6 +111,36 @@ export const router: ReturnType<typeof createBrowserRouter> =
             {
               path: ":petId/delete",
               action: petDeleteAction,
+            },
+          ],
+        },
+        {
+          path: "vaccines",
+          id: "vaccinesPage",
+          element: <VaccinesPage />,
+        },
+        {
+          path: "vaccine",
+          id: "vaccine",
+          children: [
+            {
+              index: true,
+              path: ":vaccineId",
+              id: "vaccineDetailPage",
+              element: <VaccineDetailPage />,
+            },
+            {
+              path: "new",
+              element: <CreateVaccinePage />,
+              id: "newVaccine",
+            },
+            {
+              path: ":vaccineId/edit",
+              element: <EditVaccinePage />,
+              id: "editVaccine",
+            },
+            {
+              path: ":vaccineId/delete",
             },
           ],
         },
