@@ -90,5 +90,13 @@ namespace api.Controllers
 
             return NoContent();
         }
+
+        [HttpGet]
+        [Route("totalVaccines")]
+        public async Task<IActionResult> GetTotalVaccines()
+        {
+            var total = await _vaccineRepo.GetTotalVaccines();
+            return Ok(new { totalVaccines = total });
+        }
     }
 }

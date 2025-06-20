@@ -2,6 +2,7 @@
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -90,6 +91,14 @@ namespace api.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet]
+        [Route("totalOwners")]
+        public async Task<IActionResult> GetTotalOwners()
+        {
+            var total = await _ownerRepo.GetTotalOwners();
+            return Ok(new { totalOwners = total });
         }
     }
 }

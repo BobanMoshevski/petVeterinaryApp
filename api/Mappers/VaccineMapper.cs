@@ -10,7 +10,13 @@ namespace api.Mappers
             return new VaccineDto
             {
                 Id = vaccineModel.Id,
-                Name = vaccineModel.Name
+                Name = vaccineModel.Name,
+                Manufacturer = vaccineModel.Manufacturer,
+                BatchNumber = vaccineModel.BatchNumber,
+                ExpirationDate = vaccineModel.ExpirationDate,
+                Description = vaccineModel.Description,
+                CreatedAt = vaccineModel.CreatedAt,
+                UpdatedAt = vaccineModel.UpdatedAt
             };
         }
 
@@ -18,7 +24,13 @@ namespace api.Mappers
         {
             return new Vaccine
             {
-                Name = vaccineDto.Name
+                Name = vaccineDto.Name,
+                Manufacturer = vaccineDto.Manufacturer,
+                BatchNumber = vaccineDto.BatchNumber,
+                ExpirationDate = vaccineDto.ExpirationDate,
+                Description = vaccineDto.Description,
+                CreatedAt = vaccineDto.CreatedAt,
+                UpdatedAt = vaccineDto.UpdatedAt,
             };
         }
     }

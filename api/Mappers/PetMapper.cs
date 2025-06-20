@@ -12,7 +12,13 @@ namespace api.Mappers
             {
                 Id = petModel.Id,
                 Name = petModel.Name,
-                Age = petModel.Age,
+                DateOfBirth = petModel.DateOfBirth,
+                Species = petModel.Species,
+                Breed = petModel.Breed,
+                Gender = petModel.Gender,
+                Weight = petModel.Weight,
+                CreatedAt = petModel.CreatedAt,
+                UpdatedAt = petModel.UpdatedAt,
                 Vaccines = petModel.PetVaccines?
                     .Select(pv => new VaccineDto
                     {
@@ -28,13 +34,27 @@ namespace api.Mappers
             {
                 Id = petModel.Id,
                 Name = petModel.Name,
-                Age = petModel.Age,
+                DateOfBirth = petModel.DateOfBirth,
+                Species= petModel.Species,
+                Breed = petModel.Breed,
+                Gender = petModel.Gender,
+                Weight = petModel.Weight,
+                CreatedAt = petModel.CreatedAt,
+                UpdatedAt = petModel.UpdatedAt,
                 Owner = new PetWithOwnerDto
                 {
                     Id = petModel.Owner.Id,
                     Name = petModel.Owner.Name,
                     Surname = petModel.Owner.Surname,
-                    Age = petModel.Owner.Age
+                    Address = petModel.Owner.Address,
+                    City = petModel.Owner.City,
+                    Country = petModel.Owner.Country,
+                    DateOfBirth = petModel.Owner.DateOfBirth,
+                    Email = petModel.Owner.Email,
+                    PhoneNumber = petModel.Owner.PhoneNumber,
+                    PostalCode = petModel.Owner.PostalCode,
+                    CreatedAt = petModel.Owner.CreatedAt,
+                    UpdatedAt = petModel.Owner.UpdatedAt,
                 },
                 Vaccines = petModel.PetVaccines.Select(pv => new VaccineDto
                 {
@@ -49,7 +69,13 @@ namespace api.Mappers
             return new Pet
             {
                 Name = petDto.Name,
-                Age = petDto.Age,
+                DateOfBirth = petDto.DateOfBirth,
+                Species = petDto.Species,
+                Breed = petDto.Breed,
+                Gender = petDto.Gender,
+                Weight = petDto.Weight,
+                CreatedAt = petDto.CreatedAt,
+                UpdatedAt = petDto.UpdatedAt,
                 OwnerId = ownerId,
                 PetVaccines = petDto.VaccineIds.Select(vaccineId => new PetVaccine
                 {
@@ -63,7 +89,12 @@ namespace api.Mappers
             return new Pet
             {
                 Name = petDto.Name,
-                Age = petDto.Age,
+                DateOfBirth = petDto.DateOfBirth,
+                Species = petDto.Species,
+                Breed = petDto.Breed,
+                Gender = petDto.Gender,
+                Weight = petDto.Weight,
+                UpdatedAt = petDto.UpdatedAt,
                 OwnerId = petDto.OwnerId,
                 PetVaccines = petDto.VaccineIds.Select(id => new PetVaccine { VaccineId = id }).ToList()
             };
