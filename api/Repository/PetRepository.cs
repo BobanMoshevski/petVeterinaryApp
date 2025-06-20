@@ -14,6 +14,41 @@ namespace api.Repository
             _context = context;
         }
 
+        public async Task<List<Pet>> GetAllPets(PetQueryObject query)
+        {
+            var pets = _context.Pets
+                .Include(o => o.Owner)
+                .Include(pv => pv.PetVaccines)
+                .ThenInclude(v => v.Vaccine)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                pets = pets.Where(p => p.Name.Contains(query.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    pets = query.IsDescending ? pets.OrderByDescending(p => p.Name) : pets.OrderBy(p => p.Name);
+                }
+            }
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await pets.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+        }
+        public async Task<Pet?> GetPetById(int id)
+        {
+            return await _context.Pets
+                .Include(o => o.Owner)
+                .Include(pv => pv.PetVaccines)
+                .ThenInclude(v => v.Vaccine)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+
         public async Task<Pet?> CreatePet(Pet petModel, List<int> vaccineIds)
         {
             var validVaccineIds = await _context.Vaccines
@@ -41,55 +76,6 @@ namespace api.Repository
                 .FirstOrDefaultAsync(p => p.Id == petModel.Id);
         }
 
-        public async Task<Pet?> DeletePet(int id)
-        {
-            var petModel = await _context.Pets.FirstOrDefaultAsync(p => p.Id == id);
-
-            if (petModel == null)
-            {
-                return null;
-            }
-
-            _context.Pets.Remove(petModel);
-            await _context.SaveChangesAsync();
-            return petModel;
-        }
-
-        public async Task<List<Pet>> GetAllPets(PetQueryObject query)
-        {
-            var pets = _context.Pets
-                .Include(o => o.Owner)
-                .Include(pv => pv.PetVaccines)
-                .ThenInclude(v => v.Vaccine)
-                .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(query.Name))
-            {
-                pets = pets.Where(p => p.Name.Contains(query.Name));
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
-            {
-                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
-                {
-                    pets = query.IsDescending ? pets.OrderByDescending(p => p.Name) : pets.OrderBy(p => p.Name);
-                }
-            }
-
-            var skipNumber = (query.PageNumber - 1) * query.PageSize;
-
-            return await pets.Skip(skipNumber).Take(query.PageSize).ToListAsync();
-        }
-
-        public async Task<Pet?> GetPetById(int id)
-        {
-            return await _context.Pets
-                .Include(o => o.Owner)
-                .Include(pv => pv.PetVaccines)
-                .ThenInclude(v => v.Vaccine)
-                .FirstOrDefaultAsync(p => p.Id == id);
-        }
-
         public async Task<Pet?> UpdatePet(int id, Pet petModel)
         {
             var existingPet = await _context.Pets
@@ -102,9 +88,13 @@ namespace api.Repository
             }
 
             existingPet.Name = petModel.Name;
-            existingPet.Age = petModel.Age;
+            existingPet.DateOfBirth = petModel.DateOfBirth;
+            existingPet.Species = petModel.Species;
+            existingPet.Breed = petModel.Breed;
+            existingPet.Gender = petModel.Gender;
+            existingPet.Weight = petModel.Weight;
             existingPet.OwnerId = petModel.OwnerId;
-
+            existingPet.UpdatedAt = petModel.UpdatedAt;
             existingPet.PetVaccines.Clear();
 
             if (petModel.PetVaccines != null && petModel.PetVaccines.Any())
@@ -124,5 +114,24 @@ namespace api.Repository
             var petWithOwnerModel = await GetPetById(existingPet.Id);
             return petWithOwnerModel;
         }
+
+        public async Task<Pet?> DeletePet(int id)
+        {
+            var petModel = await _context.Pets.FirstOrDefaultAsync(p => p.Id == id);
+
+            if (petModel == null)
+            {
+                return null;
+            }
+
+            _context.Pets.Remove(petModel);
+            await _context.SaveChangesAsync();
+            return petModel;
+        }
+        public async Task<int> GetTotalPets()
+        {
+            return await _context.Pets.CountAsync();
+        }
+
     }
 }

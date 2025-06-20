@@ -60,6 +60,11 @@ namespace api.Repository
             }
 
             existingVaccine.Name = vaccineDto.Name;
+            existingVaccine.Manufacturer = vaccineDto.Manufacturer;
+            existingVaccine.BatchNumber = vaccineDto.BatchNumber;
+            existingVaccine.ExpirationDate = vaccineDto.ExpirationDate;
+            existingVaccine.Description = vaccineDto.Description;
+            existingVaccine.UpdatedAt = vaccineDto.UpdatedAt;
 
             await _context.SaveChangesAsync();
 
@@ -79,6 +84,11 @@ namespace api.Repository
             await _context.SaveChangesAsync();
 
             return vaccineModel;
+        }
+
+        public async Task<int> GetTotalVaccines()
+        {
+            return await _context.Vaccines.CountAsync();
         }
     }
 }

@@ -108,5 +108,13 @@ namespace api.Controllers
 
             return Ok(petModel);
         }
+
+        [HttpGet]
+        [Route("totalPets")]
+        public async Task<IActionResult> GetTotalPets()
+        {
+            var total = await _petRepo.GetTotalPets();
+            return Ok(new { totalPets = total });
+        }
     }
 }

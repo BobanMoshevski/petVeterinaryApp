@@ -11,5 +11,6 @@ namespace api.Interfaces
         Task<Vaccine> CreateVaccine(Vaccine vaccineModel);
         Task<Vaccine?> UpdateVaccine(int id, UpdateVaccineRequestDto vaccineDto);
         Task<Vaccine?> DeleteVaccine(int id);
+        Task<int> GetTotalVaccines();
     }
 }

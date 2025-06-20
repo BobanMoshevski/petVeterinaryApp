@@ -1,37 +1,42 @@
-import { Navigation, useNavigation, useRouteLoaderData } from "react-router";
+import { useMemo } from "react";
+import {
+  useLocation,
+  Location,
+  NavigateFunction,
+  Navigation,
+  useNavigate,
+  useNavigation,
+  useRouteLoaderData,
+} from "react-router";
+import LoadingSpinnerLayout from "../../components/loadingSpinnerLayout/LoadingSpinnerLayout";
+import OwnersSearchBar from "../../components/ownersContent/ownersSearchBar/OwnersSearchBar";
+import OwnersTable from "../../components/ownersContent/ownersTable/OwnersTable";
 import { OwnerType } from "../../models/OwnerTypes";
-import OwnersSearchBar from "../../components/ownersSearchBar/OwnersSearchBar";
-import OwnersTable from "../../components/ownersTable/OwnersTable";
 
 const OwnersPage: React.FC = () => {
+  const ownersData: OwnerType[] = useRouteLoaderData("owners") as OwnerType[];
+  const navigate: NavigateFunction = useNavigate();
+  const location: Location = useLocation();
+  const searchParams: URLSearchParams = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search],
+  );
   const navigation: Navigation = useNavigation();
   const isLoading: boolean = navigation.state === "loading";
-  const ownersData: OwnerType[] | undefined = useRouteLoaderData("owners");
+  const isSubmitting: boolean = navigation.state === "submitting";
 
   return (
     <>
-      {isLoading && (
-        <>
-          <div className="overlay" />
-          <div className="spinner-container">
-            <div
-              className="spinner-border text-light layout-spinner"
-              role="status"
-            >
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-        </>
-      )}
+      <LoadingSpinnerLayout isLoading={isLoading} isSubmitting={isSubmitting} />
       <div className="container">
         <div className="row">
-          <OwnersSearchBar />
+          <OwnersSearchBar navigate={navigate} searchParams={searchParams} />
           {ownersData?.length === 0 ? (
             <div style={{ fontSize: "2rem", textAlign: "center" }}>
-              Owner not found!
+              Owners not found!
             </div>
           ) : (
-            <OwnersTable ownersData={ownersData || []} />
+            <OwnersTable navigate={navigate} ownersData={ownersData} />
           )}
         </div>
       </div>

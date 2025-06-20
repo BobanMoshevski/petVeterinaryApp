@@ -1,0 +1,17 @@
+.contact-heading {
+  font-size: 1.75rem;
+}
+
+.contact-info {
+  font-size: 1.2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .contact-heading {
+    font-size: 1.5rem;
+  }
+
+  .contact-info {
+    font-size: 1rem;
+  }
+}

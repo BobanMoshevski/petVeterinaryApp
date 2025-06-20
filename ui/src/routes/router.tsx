@@ -1,33 +1,39 @@
 import { createBrowserRouter } from "react-router";
 import RootLayout from "../pages/rootLayout/RootLayout";
+import ErrorPage from "../pages/errorPage/ErrorPage";
 import HomePage from "../pages/homePage/HomePage";
 import OwnersPage from "../pages/ownersPage/OwenrsPage";
-import {
-  ownerGetAPI,
-  ownersGetAPI,
-  petGetAPI,
-  petsGetAPI,
-} from "../services/https/loader/loader";
-import {
-  createOwnerAction,
-  createPetAction,
-  ownerDeleteAction,
-  petDeleteAction,
-  updateOwnerAction,
-  updatePetAction,
-} from "../services/https/action/action";
-import CreateOwner from "../components/createOwner/CreateOwner";
-import EditOwner from "../components/editOwner/EditOwner";
-import ErrorPage from "../pages/errorPage/ErrorPage";
-import OwnerDetailPage from "../pages/ownerDetailPage/OwnerDetailPage";
+import OwnerDetailsPage from "../pages/ownerDetailsPage/OwnerDetailsPage";
+import CreateOwnerPage from "../pages/createOwnerPage/CreateOwnerPage";
+import EditOwnerPage from "../pages/editOwnerPage/EditOwnerPage";
 import PetsPage from "../pages/petsPage/PetsPage";
-import PetDetailPage from "../pages/petDetailPage/PetDetailPage";
+import PetDetailsPage from "../pages/petDetailsPage/PetDetailsPage";
 import CreatePetPage from "../pages/createPetPage/CreatePetPage";
 import EditPetPage from "../pages/editPetPage/EditPetPage";
 import VaccinesPage from "../pages/vaccinesPage/VaccinesPage";
-import VaccineDetailPage from "../pages/vaccineDetailPage/VaccineDetailPage";
+import VaccineDetailsPage from "../pages/vaccineDetailsPage/VaccineDetailsPage";
 import CreateVaccinePage from "../pages/createVaccinePage/CreateVaccinePage";
 import EditVaccinePage from "../pages/editVaccinePage/EditVaccinePage";
+import {
+  getTotalOwnersPetsVaccinesAPI,
+  ownersGetAPI,
+  ownerGetAPI,
+  petsGetAPI,
+  petGetAPI,
+  vaccinesGetAPI,
+  vaccineGetAPI,
+} from "../services/https/loader/loader";
+import {
+  createOwnerAction,
+  updateOwnerAction,
+  ownerDeleteAction,
+  createPetAction,
+  updatePetAction,
+  petDeleteAction,
+  createVaccineAction,
+  updateVaccineAction,
+  deleteVaccineAction,
+} from "../services/https/action/action";
 
 export const router: ReturnType<typeof createBrowserRouter> =
   createBrowserRouter([
@@ -40,6 +46,8 @@ export const router: ReturnType<typeof createBrowserRouter> =
         {
           index: true,
           element: <HomePage />,
+          id: "home",
+          loader: getTotalOwnersPetsVaccinesAPI,
         },
         {
           path: "owners",
@@ -49,24 +57,22 @@ export const router: ReturnType<typeof createBrowserRouter> =
         },
         {
           path: "owner",
-          id: "owner",
           children: [
             {
-              index: true,
               path: ":ownerId",
-              id: "ownerDetail",
-              element: <OwnerDetailPage />,
+              id: "ownerDetails",
+              element: <OwnerDetailsPage />,
               loader: ownerGetAPI,
             },
             {
               path: "new",
-              element: <CreateOwner />,
+              element: <CreateOwnerPage />,
               action: createOwnerAction,
             },
             {
               path: ":ownerId/edit",
-              element: <EditOwner />,
               id: "editOwner",
+              element: <EditOwnerPage />,
               loader: ownerGetAPI,
               action: updateOwnerAction,
             },
@@ -78,7 +84,7 @@ export const router: ReturnType<typeof createBrowserRouter> =
         },
         {
           path: "pets",
-          id: "petsPage",
+          id: "pets",
           element: <PetsPage />,
           loader: petsGetAPI,
         },
@@ -88,17 +94,16 @@ export const router: ReturnType<typeof createBrowserRouter> =
           loader: ownersGetAPI,
           children: [
             {
-              index: true,
               path: ":petId",
-              id: "petDetail",
-              element: <PetDetailPage />,
+              id: "petDetails",
+              element: <PetDetailsPage />,
               loader: petGetAPI,
             },
             {
               path: "new",
               element: <CreatePetPage />,
               id: "newPet",
-              loader: ownersGetAPI,
+              loader: vaccinesGetAPI,
               action: createPetAction,
             },
             {
@@ -116,31 +121,34 @@ export const router: ReturnType<typeof createBrowserRouter> =
         },
         {
           path: "vaccines",
-          id: "vaccinesPage",
           element: <VaccinesPage />,
+          id: "vaccines",
+          loader: vaccinesGetAPI,
         },
         {
           path: "vaccine",
-          id: "vaccine",
           children: [
             {
-              index: true,
               path: ":vaccineId",
-              id: "vaccineDetailPage",
-              element: <VaccineDetailPage />,
+              id: "vaccineDetails",
+              element: <VaccineDetailsPage />,
+              loader: vaccineGetAPI,
             },
             {
               path: "new",
               element: <CreateVaccinePage />,
-              id: "newVaccine",
+              action: createVaccineAction,
             },
             {
               path: ":vaccineId/edit",
-              element: <EditVaccinePage />,
               id: "editVaccine",
+              element: <EditVaccinePage />,
+              loader: vaccineGetAPI,
+              action: updateVaccineAction,
             },
             {
               path: ":vaccineId/delete",
+              action: deleteVaccineAction,
             },
           ],
         },

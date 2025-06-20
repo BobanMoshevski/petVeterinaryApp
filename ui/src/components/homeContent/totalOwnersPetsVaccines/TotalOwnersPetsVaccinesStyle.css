@@ -1,0 +1,21 @@
+.total-text-number {
+  font-size: 2rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .total-text-number {
+    font-size: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .total-text-number {
+    font-size: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .total-text-number {
+    font-size: 1.3rem;
+  }
+}

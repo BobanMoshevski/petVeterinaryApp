@@ -15,28 +15,6 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<Owner> CreateOwner(Owner ownerModel)
-        {
-            await _context.Owners.AddAsync(ownerModel);
-            await _context.SaveChangesAsync();
-            return ownerModel;
-        }
-
-        public async Task<Owner?> DeleteOwner(int id)
-        {
-            var ownerModel = await _context.Owners.FirstOrDefaultAsync(o => o.Id == id);
-
-            if(ownerModel == null)
-            {
-                return null;
-            }
-
-            _context.Owners.Remove(ownerModel);
-            await _context.SaveChangesAsync();
-
-            return ownerModel;
-        }
-
         public async Task<List<Owner>> GetAllOwners(OwnerQueryObject query)
         {
             var owners = _context.Owners.Include(p => p.Pets)
@@ -67,7 +45,7 @@ namespace api.Repository
                 }
             }
 
-            var skipNumber = (query.PageNumber -1) * query.PageSize;
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
             return await owners.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
@@ -80,9 +58,11 @@ namespace api.Repository
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public Task<bool> OwnerExists(int id)
+        public async Task<Owner> CreateOwner(Owner ownerModel)
         {
-            return _context.Owners.AnyAsync(o => o.Id == id);
+            await _context.Owners.AddAsync(ownerModel);
+            await _context.SaveChangesAsync();
+            return ownerModel;
         }
 
         public async Task<Owner?> UpdateOwner(int id, UpdateOwnerRequestDto ownerDto)
@@ -96,11 +76,43 @@ namespace api.Repository
 
             existingOwner.Name = ownerDto.Name;
             existingOwner.Surname = ownerDto.Surname;
-            existingOwner.Age = ownerDto.Age;
+            existingOwner.DateOfBirth = ownerDto.DateOfBirth;
+            existingOwner.Email = ownerDto.Email;
+            existingOwner.PhoneNumber = ownerDto.PhoneNumber;
+            existingOwner.Address = ownerDto.Address;
+            existingOwner.Country = ownerDto.Country;
+            existingOwner.City = ownerDto.City;
+            existingOwner.PostalCode = ownerDto.PostalCode;
+            existingOwner.UpdatedAt = ownerDto.UpdatedAt;
 
             await _context.SaveChangesAsync();
 
             return existingOwner;
+        }
+
+        public async Task<Owner?> DeleteOwner(int id)
+        {
+            var ownerModel = await _context.Owners.FirstOrDefaultAsync(o => o.Id == id);
+
+            if(ownerModel == null)
+            {
+                return null;
+            }
+
+            _context.Owners.Remove(ownerModel);
+            await _context.SaveChangesAsync();
+
+            return ownerModel;
+        }
+
+        public Task<bool> OwnerExists(int id)
+        {
+            return _context.Owners.AnyAsync(o => o.Id == id);
+        }
+
+        public async Task<int> GetTotalOwners()
+        {
+            return await _context.Owners.CountAsync();
         }
     }
 }

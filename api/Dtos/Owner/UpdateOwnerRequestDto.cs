@@ -13,7 +13,28 @@ namespace api.Dtos.Owner
         [MaxLength(40, ErrorMessage = "Surname cannot exceed 40 characters.")]
         public string Surname { get; set; }
         [Required]
-        [Range(18, 100, ErrorMessage = "Age must be between 18 and 100.")]
-        public int Age { get; set; }
+        [CustomDateOfBirthValidation(ErrorMessage = "Owner must be between 18 and 100 years old.")]
+        public DateTime DateOfBirth { get; set; }
+        [Required]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
+        public string Email { get; set; }
+        [Required]
+        [Phone(ErrorMessage = "Invalid phone number.")]
+        [MinLength(7)]
+        [MaxLength(20)]
+        public string PhoneNumber { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string Address { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string Country { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string City { get; set; }
+        [Required]
+        [MaxLength(20)]
+        public string PostalCode { get; set; }
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }

@@ -1,0 +1,17 @@
+.working-hours-heading {
+  font-size: 1.75rem;
+}
+
+.working-hours {
+  font-size: 1.2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .working-hours-heading {
+    font-size: 1.5rem;
+  }
+
+  .working-hours {
+    font-size: 1rem;
+  }
+}

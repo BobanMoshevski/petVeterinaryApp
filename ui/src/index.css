@@ -26,3 +26,27 @@
 .hover-light:hover {
   color: white !important;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.table-horizontal-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.input-focus-shadow:focus {
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-secondary-rgb), 0.4);
+  outline: none;
+}
+
+input[type="checkbox"].custom-checkbox:checked {
+  background-color: var(--bs-secondary); /* Fill color */
+  border-color: var(--bs-secondary); /* Border color */
+}
+
+/* Optional: Change the checkmark color */
+input[type="checkbox"].custom-checkbox:checked::before {
+  color: white; /* This works only with a fully custom checkmark */
+}
